@@ -4,17 +4,30 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "uart.h"
+#include "hmi_msg.h"
+#include "print_helper.h"
+#include "../lib/hd44780_111/hd44780.h"
 
 #define BLINK_DELAY_MS 100
-
 void blink (const char pin) /* Function for toggleing PORTA pins */
 {
     DDRA = 0x15; /* Set port A pins 0,2,4 (00010101=15h) for outputs */
-    PORTA |= _BV(
-                 pin); /* scan whole PORTA and shift 1 zero positions to the left (_BV=(1<<0)) */
+    PORTA |= _BV(pin); /* scan whole PORTA and shift 1 zero positions to the left (_BV=(1<<0)) */
     _delay_ms(BLINK_DELAY_MS);
     PORTA &= ~_BV(pin); /* ~=bitwise NOT, toggle bit value */
     _delay_ms(BLINK_DELAY_MS);
+}
+static inline void init_uart_io(void)
+{
+    simple_uart0_init();
+    stdin = stdout = &simple_uart0_io;
+    fprintf(stdout, "%s\n", name);
+    print_ascii_tbl(stdout);
+    unsigned char ascii[128] = {0};
+    for (unsigned char i = 0; i < sizeof(ascii); i++) {
+        ascii[i] = i;
+    }
+    print_for_human(stdout, ascii, sizeof(ascii));
 }
 
 /* Init error console as stderr in UART1 and print user code info */
@@ -30,32 +43,33 @@ static inline void init_errcon(void)
 
 void main (void)
 {
-    init_errcon();
-    /* Test assert - REMOVE IN FUTURE LABS */
-    char *array;
-    uint32_t i = 1;
-    extern int __heap_start,
-           *__brkval; /* http://users.ece.utexas.edu/~valvano/arm/heap.c */
-    int v;
-    array = malloc( i * sizeof(char));
-    assert(array);
+    init_errcon(); /*error console on UART1*/
+    init_uart_io();
+    lcd_init();
+    lcd_home();
+    lcd_puts(name);
+    int number;
 
-    /* End test assert */
     while (1) {
         blink(PA0);
         blink(PA2);
         blink(PA4);
-        /* Test assert - REMOVE IN FUTURE LABS */
-        /*
-         * Increase memory allocated for array by 100 chars
-         * until we have eaten it all and print space between stack and heap.
-         * That is how assert works in run-time.
-         */
-        array = realloc( array, (i++ * 100) * sizeof(char));
-        fprintf(stderr, "%d\n",
-                (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval));
-        assert(array);
-        /* End test assert */
-    }
+        printf("Enter number >");
+        fscanf(stdin, "%s", &number);
+        fprintf(stdout, "%s\n", &number);
+        if (number >= 48 && number <= 57) {
+            lcd_clr(64,16);
+            lcd_goto(LCD_ROW_2_START);
+            fprintf(stdout, "%s\n", lookup[number-48]);
+            lcd_puts(lookup[number-48]);
+            }
+        else {
+            fprintf(stdout, "Enter number between 0 and 9!\n");
+            lcd_clr(64,16);
+            lcd_goto(LCD_ROW_2_START);
+            lcd_puts("Enter number between 0 and 9!");
+        }
+        }
 }
+
 
