@@ -1,7 +1,4 @@
 #include <stdio.h>
-#define __ASSERT_USE_STDERR
-#include <assert.h> /* The C library macro void assert(int expression) allows diagnostic information to be written to the standard error file. */
-#include <avr/io.h>
 #include <util/delay.h>
 #include <avr/pgmspace.h>
 #include "uart.h"
@@ -23,7 +20,7 @@ static inline void init_uart_io(void)
 {
     simple_uart0_init();
     stdin = stdout = &simple_uart0_io;
-    fprintf(stdout, "%s\n", USERNAME);
+    fprintf_P(stdout, PSTR("%S\n"), USERNAME);
     print_ascii_tbl(stdout);
     unsigned char ascii[128] = {0};
     for (unsigned char i = 0; i < sizeof(ascii); i++) {
@@ -37,12 +34,8 @@ static inline void init_errcon(void)
 {
     simple_uart1_init();
     stderr = &simple_uart1_out;
-/*    fprintf(stderr, "Version: %s built on: %s %s\n",*/
-/*            FW_VERSION, __DATE__, __TIME__);*/
-/*    fprintf(stderr, "avr-libc version: %s avr-gcc version: %s\n",*/
-/*            __AVR_LIBC_VERSION_STRING__, __VERSION__);*/
-    fprintf(stderr, VER_FW, FW_VERSION, __DATE__, __TIME__ "\n");
-    fprintf(stderr, VER_LIBC, __AVR_LIBC_VERSION_STRING__ " " VER_GCC, __VERSION__ "\n");    
+    fprintf_P(stderr, VER_FW, FW_VERSION, __DATE__, __TIME__);
+    fprintf_P(stderr, VER_AVR, __AVR_LIBC_VERSION_STRING__, __VERSION__);
 }
 
 void main (void)
@@ -51,7 +44,7 @@ void main (void)
     init_uart_io();
     lcd_init();
     lcd_home();
-    lcd_puts(USERNAME);
+    lcd_puts_P(USERNAME);
     int number;
 
     while (1) {
@@ -64,8 +57,9 @@ void main (void)
         if (number >= 48 && number <= 57) {
             lcd_clr(64,16);
             lcd_goto(LCD_ROW_2_START);
-            fprintf(stdout, "%s\n", lookup[number-48]);
-            lcd_puts(lookup[number-48]);
+            fprintf_P(stdout, PSTR("%S\n"), numbers[number-48]);
+            fprintf_P(stderr, PSTR("%S\n"), numbers[number-48]); //testing purpose
+            lcd_puts_P((PGM_P)pgm_read_word(&(numbers[number-48])));
             }
         else {
             fprintf(stdout, "Enter number between 0 and 9!\n");
@@ -75,5 +69,3 @@ void main (void)
         }
         }
 }
-
-
