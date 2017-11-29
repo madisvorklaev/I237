@@ -1,3 +1,4 @@
+/*Used Arti Zirk's materials https://git.wut.ee/arti/i237/src/lab03.2/src*/
 #include <stdio.h>
 #include <avr/pgmspace.h>
 #include "print_helper.h"

@@ -1,3 +1,4 @@
+/*Used Arti Zirk's materials https://git.wut.ee/arti/i237/src/lab03.2/src*/
 #ifndef PRINT_HELPER
 #define PRINT_HELPER
 
