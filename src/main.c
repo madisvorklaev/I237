@@ -51,21 +51,22 @@ void main (void)
         blink(PA0);
         blink(PA2);
         blink(PA4);
-        printf("Enter number >");
+        fprintf_P(stdout, PSTR("%S\n"), GET_NUM_MESSAGE);
         fscanf(stdin, "%s", &number);
         fprintf(stdout, "%s\n", &number);
         if (number >= 48 && number <= 57) {
             lcd_clr(64,16);
             lcd_goto(LCD_ROW_2_START);
-            fprintf_P(stdout, PSTR("%S\n"), numbers[number-48]);
-            fprintf_P(stderr, PSTR("%S\n"), numbers[number-48]); //testing purpose
+            fprintf_P(stdout, ENTERED_NUM_MESSAGE);
+            fprintf_P(stdout, (PGM_P)pgm_read_word(&(numbers[number-48])));
+            fputc('\n', stdout);
             lcd_puts_P((PGM_P)pgm_read_word(&(numbers[number-48])));
             }
         else {
-            fprintf(stdout, "Enter number between 0 and 9!\n");
+            fprintf_P(stdout, PSTR("%S\n"), NOT_NUM_MESSAGE);
             lcd_clr(64,16);
             lcd_goto(LCD_ROW_2_START);
-            lcd_puts("Enter number between 0 and 9!");
+            lcd_puts_P(NOT_NUM_MESSAGE);
         }
         }
 }

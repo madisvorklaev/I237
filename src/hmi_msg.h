@@ -2,26 +2,23 @@
 #ifndef HMI_MSG /* prevent the header file to be included more than once, see "wrapper #ifndef" */
 #define HMI_MSG
 
-//#define USERNAME  "Madis Vorklaev"
-//#define VER_FW "Version: %s built on: %s %s\n"
-//#define VER_LIBC "avr-libc version: %s"
-//#define VER_GCC  "avr-gcc version: %s\n"
 const char USERNAME[] PROGMEM = "Madis Vorklaev";
 const char VER_FW[] PROGMEM = "Version: %s built on: %s %s";
 const char VER_AVR[] PROGMEM = "avr-libc version: %s avr-gcc version: %s\n";
+const char GET_NUM_MESSAGE[] PROGMEM = "Enter number >";
+const char NOT_NUM_MESSAGE[] PROGMEM = "Enter number between 0 and 9!";
+const char ENTERED_NUM_MESSAGE[] PROGMEM = "You entered number ";
 
-//char *name = "Madis vVorklaev";
-//char *VER_FW = ("Version: FW_VERSION built on: __DATE__ __TIME__\n");
-const char n1[] PROGMEM = "Zero";
-const char n2[] PROGMEM = "One";
-const char n3[] PROGMEM = "Two";
-const char n4[] PROGMEM = "Three";
-const char n5[] PROGMEM = "Four";
-const char n6[] PROGMEM = "Five";
-const char n7[] PROGMEM = "Six";
-const char n8[] PROGMEM = "Seven";
-const char n9[] PROGMEM = "Eight";
-const char n10[] PROGMEM = "Nine";
+const char n1[] PROGMEM = "zero";
+const char n2[] PROGMEM = "one";
+const char n3[] PROGMEM = "two";
+const char n4[] PROGMEM = "three";
+const char n5[] PROGMEM = "four";
+const char n6[] PROGMEM = "five";
+const char n7[] PROGMEM = "six";
+const char n8[] PROGMEM = "seven";
+const char n9[] PROGMEM = "eight";
+const char n10[] PROGMEM = "nine";
 
 PGM_P const numbers[] PROGMEM = 
 {
@@ -36,7 +33,5 @@ PGM_P const numbers[] PROGMEM =
     n9,
     n10
 };
-//const char *lookup[10] = {"Zero", "One","Two","Three","Four","Five","Six","Seven","Eight","Nine"};
-
 
 #endif /* HMI_MSG */

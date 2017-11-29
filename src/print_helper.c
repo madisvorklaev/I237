@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <avr/pgmspace.h>
 #include "print_helper.h"
 
 int print_ascii_tbl (FILE *stream)
