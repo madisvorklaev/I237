@@ -75,8 +75,8 @@ static inline void init_errcon(void)
 {
     simple_uart1_init();
     stderr = &simple_uart1_out;
-    fprintf_P(stderr, VER_FW, FW_VERSION, __DATE__, __TIME__);
-    fprintf_P(stderr, VER_AVR, __AVR_LIBC_VERSION_STRING__, __VERSION__);
+    fprintf_P(stderr, VER_FW);
+    fprintf_P(stderr, VER_AVR);
 }
 
 void main (void)
@@ -89,9 +89,9 @@ void main (void)
     int number;
 
     while (1) {
-/*        blink(PA0);*/
-/*        blink(PA2);*/
-/*        blink(PA4);*/
+        blink(PA0);
+        blink(PA2);
+        blink(PA4);
         fprintf_P(stdout, PSTR("%S\n"), GET_NUM_MESSAGE);
         fscanf(stdin, "%s", &number);
         fprintf(stdout, "%s\n", &number);
