@@ -3,7 +3,7 @@
 #define HMI_MSG
 
 const char USERNAME[] PROGMEM = "Madis Vorklaev";
-const char VER_FW[] PROGMEM = "Version: %s built on: %s %s";
+const char VER_FW[] PROGMEM = "Version: %s built on: %s %s\n";
 const char VER_AVR[] PROGMEM = "avr-libc version: %s avr-gcc version: %s\n";
 const char GET_NUM_MESSAGE[] PROGMEM = "Enter number >";
 const char NOT_NUM_MESSAGE[] PROGMEM = "Enter number between 0 and 9!";
