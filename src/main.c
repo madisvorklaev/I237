@@ -54,11 +54,11 @@ static inline void init_con_uart1(void)
     print_ascii_tbl();
 
 /*    uart1_puts_p(PSTR("lalalala\r\n"));*/
-/*    unsigned char ascii[128] = {0};*/
-    /*        for (unsigned char i = 0; i < sizeof(ascii); i++) {*/
-    /*            ascii[i] = i;*/
-    /*        }*/
-/*    print_for_human(ascii, sizeof(ascii));*/
+    unsigned char ascii[128] = {0};
+            for (unsigned char i = 0; i < sizeof(ascii); i++) {
+                ascii[i] = i;
+            }
+    print_for_human(ascii, sizeof(ascii));
 }
 
 
