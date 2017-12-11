@@ -154,10 +154,12 @@ void main (void)
     /*    lcd_puts_P(USERNAME);*/
     /*    int number;*/
     /*    init_hw();*/
+    sei(); // Enable all interrupts. Set up all interrupts before sei()!!!
     init_leds();
     init_con_uart1();
     init_counter_1();
-    sei(); // Enable all interrupts. Set up all interrupts before sei()!!!
+
+
 
     while (1) {
         /*        heartbeat();*/
