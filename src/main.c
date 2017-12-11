@@ -28,10 +28,13 @@
 #include <stdlib.h> // stdlib is needed to use ltoa() - Long to ASCII
 #endif /* ASCII_PRINT */
 
-/* Global seconds counter */
-volatile uint32_t counter_1;
-uint32_t prev_time = 0;
-uint32_t now = 0;
+
+volatile uint32_t counter_1; //Global seconds counter
+uint32_t prev_time = 0; //Heartbeat time placeholder
+uint32_t now = 0; //Heartbeat time placeholder
+/*int uart0_putc_wrap(char c, FILE *stream);*/
+/*int uart0_getc_wrap(FILE *stream);*/
+/*int uart1_putc_wrap(char c, FILE *stream);*/
 
 
 static inline void init_leds(void)
@@ -46,13 +49,22 @@ static inline void init_con_uart1(void)
 {
     uart1_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
     uart1_puts_p(PSTR("Console started\r\n"));
+    uart1_puts_p(USERNAME);
+    uart1_puts_p(PSTR("\r\n"));
+    print_ascii_tbl();
+
+/*    uart1_puts_p(PSTR("lalalala\r\n"));*/
+/*    unsigned char ascii[128] = {0};*/
+    /*        for (unsigned char i = 0; i < sizeof(ascii); i++) {*/
+    /*            ascii[i] = i;*/
+    /*        }*/
+/*    print_for_human(ascii, sizeof(ascii));*/
 }
 
 
 static inline void init_counter_1(void)
 {
-    counter_1 =
-        0; // Set counter to random number 0x19D5F539 in HEX. Set it to 0 if you want
+    counter_1 = 0; // Set counter to 0
     TCCR1A = 0;
     TCCR1B = 0;
     TCCR1B |= _BV(WGM12); // Turn on CTC (Clear Timer on Compare)
@@ -141,6 +153,7 @@ void main (void)
     /*    lcd_home();*/
     /*    lcd_puts_P(USERNAME);*/
     /*    int number;*/
+    /*    init_hw();*/
     init_leds();
     init_con_uart1();
     init_counter_1();
