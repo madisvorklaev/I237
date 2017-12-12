@@ -7,6 +7,8 @@
 #include <util/atomic.h>
 #include "hmi_msg.h"
 #include "print_helper.h"
+#include "../lib/helius_microrl/microrl.h"
+#include "cli_microrl.h"
 #include "../lib/hd44780_111/hd44780.h"
 #include "../lib/andygock_avr-uart/uart.h"
 
@@ -32,10 +34,9 @@
 volatile uint32_t counter_1; //Global seconds counter
 uint32_t prev_time = 0; //Heartbeat time placeholder
 uint32_t now = 0; //Heartbeat time placeholder
-/*int uart0_putc_wrap(char c, FILE *stream);*/
-/*int uart0_getc_wrap(FILE *stream);*/
-/*int uart1_putc_wrap(char c, FILE *stream);*/
-
+//  Create  microrl object  and pointer on  it
+microrl_t rl;
+microrl_t *prl = &rl;
 
 static inline void init_leds(void)
 {
@@ -45,20 +46,33 @@ static inline void init_leds(void)
 }
 
 
-static inline void init_con_uart1(void)
+static inline void init_con_uarts(void)
 {
+    uart0_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
+    uart0_puts_p(PSTR("Console started\r\n"));
+    uart0_puts_p(USERNAME);
+    uart0_puts_p(PSTR("\r\n"));
+
     uart1_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
     uart1_puts_p(PSTR("Console started\r\n"));
     uart1_puts_p(USERNAME);
     uart1_puts_p(PSTR("\r\n"));
-    print_ascii_tbl();
+    // call init with ptr to microrl instance and print callback
+    microrl_init (prl, uart0_puts);
+    // set callback for execute
+    microrl_set_execute_callback (prl, cli_execute);
+/*    // set callback for completion (optionally)*/
+/*    microrl_set_complete_callback (prl, complete);*/
+/*    // set callback for ctrl+c handling (optionally)*/
+/*    microrl_set_sigint_callback (prl, sigint);*/
+/*    print_ascii_tbl();*/
+/*    unsigned char ascii[128] = {0};*/
 
-/*    uart1_puts_p(PSTR("lalalala\r\n"));*/
-    unsigned char ascii[128] = {0};
-            for (unsigned char i = 0; i < sizeof(ascii); i++) {
-                ascii[i] = i;
-            }
-    print_for_human(ascii, sizeof(ascii));
+/*    for (unsigned char i = 0; i < sizeof(ascii); i++) {*/
+/*        ascii[i] = i;*/
+/*    }*/
+
+/*    print_for_human(ascii, sizeof(ascii));*/
 }
 
 
@@ -114,10 +128,10 @@ static inline void heartbeat(void)
 
     /*#else*/
     /*    // Send bytes. Byte 3 first.*/
-    /*    uart1_putc((uint8_t) (counter_1_cpy >> 24));    // Put counter byte 3*/
-    /*    uart1_putc((uint8_t) (counter_1_cpy >> 16));    // Put counter byte 2*/
-    /*    uart1_putc((uint8_t) (counter_1_cpy >> 8));     // Put counter byte 1*/
-    /*    uart1_putc((uint8_t) counter_1_cpy);            // Put counter byte 0*/
+    /*    uart0_putc((uint8_t) (counter_1_cpy >> 24));    // Put counter byte 3*/
+    /*    uart0_putc((uint8_t) (counter_1_cpy >> 16));    // Put counter byte 2*/
+    /*    uart0_putc((uint8_t) (counter_1_cpy >> 8));     // Put counter byte 1*/
+    /*    uart0_putc((uint8_t) counter_1_cpy);            // Put counter byte 0*/
 }
 
 /*static inline void init_uart_io(void)*/
@@ -136,18 +150,18 @@ static inline void heartbeat(void)
 /*}*/
 
 
-/* Init error console as stderr in UART1 and print user code info */
+/* Init error console as stderr in uart0 and print user code info */
 /*static inline void init_errcon(void)*/
 /*{*/
-/*    simple_uart1_init();*/
-/*    stderr = &simple_uart1_out;*/
+/*    simple_uart0_init();*/
+/*    stderr = &simple_uart0_out;*/
 /*    fprintf_P(stderr, VER_FW);*/
 /*    fprintf_P(stderr, VER_AVR);*/
 /*}*/
 
 void main (void)
 {
-    /*    init_errcon(); error console on UART1*/
+    /*    init_errcon(); error console on uart0*/
     /*    init_uart_io();*/
     /*    lcd_init();*/
     /*    lcd_home();*/
@@ -156,15 +170,15 @@ void main (void)
     /*    init_hw();*/
     sei(); // Enable all interrupts. Set up all interrupts before sei()!!!
     init_leds();
-    init_con_uart1();
+    init_con_uarts();
     init_counter_1();
-
-
 
     while (1) {
         /*        heartbeat();*/
         heartbeat();
-        simu_big_prog();
+/*        simu_big_prog();*/
+        //CLI commands are handled in cli_execute()
+        microrl_insert_char(prl, (uart0_getc() & UART_STATUS_MASK));
         /*        fprintf_P(stdout, PSTR("%S\n"), GET_NUM_MESSAGE);*/
         /*        fscanf(stdin, "%s", &number);*/
         /*        fprintf(stdout, "%s\n", &number);*/

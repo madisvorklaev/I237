@@ -3,8 +3,10 @@
 #define HMI_MSG
 
 const char USERNAME[] PROGMEM = "Madis Vorklaev";
-const char VER_FW[] PROGMEM = "Version: "FW_VERSION" built on: "__DATE__" "__TIME__"\n";
-const char VER_AVR[] PROGMEM = "avr-libc version: "__AVR_LIBC_VERSION_STRING__" avr-gcc version: "__VERSION__"\n";
+const char VER_FW[] PROGMEM =
+    "Version: "FW_VERSION" built on: "__DATE__" "__TIME__"\n";
+const char VER_AVR[] PROGMEM =
+    "avr-libc version: "__AVR_LIBC_VERSION_STRING__" avr-gcc version: "__VERSION__"\n";
 const char GET_NUM_MESSAGE[] PROGMEM = "Enter number >";
 const char NOT_NUM_MESSAGE[] PROGMEM = "Enter number between 0 and 9!";
 const char ENTERED_NUM_MESSAGE[] PROGMEM = "You entered number ";
@@ -20,8 +22,7 @@ const char n8[] PROGMEM = "seven";
 const char n9[] PROGMEM = "eight";
 const char n10[] PROGMEM = "nine";
 
-PGM_P const numbers[] PROGMEM = 
-{
+PGM_P const numbers[] PROGMEM = {
     n1,
     n2,
     n3,
