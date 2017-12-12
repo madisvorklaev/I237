@@ -6,5 +6,8 @@
 
 extern const char USERNAME[];
 extern PGM_P const number_name[];
+extern const char GET_NUM_MESSAGE[];
+extern const char ENTERED_NUM_MESSAGE[];
+extern const char NOT_NUM_MESSAGE[];
 #endif /* HMI_MSG_H */
 

@@ -94,8 +94,6 @@ void cli_print_ascii_tbls(const char *const *argv)
     }
 
     print_for_human(ascii, sizeof(ascii));
-/*    uart0_puts_p(*/
-/*        PSTR("Command not implemented yet.\r\n\tImplement it by yourself!\r\n"));*/
 }
 
 
@@ -103,8 +101,31 @@ void cli_handle_number(const char *const *argv)
 {
     // TODO remove those two lines after command is implemented
     (void) argv;
-    uart0_puts_p(
-        PSTR("Command not implemented yet.\r\n\tImplement it by yourself!\r\n"));
+/*    uart0_puts_p(GET_NUM_MESSAGE);*/
+    int number = atoi(argv[1]);
+    for (size_t i = 0; i < strlen(argv[1]); i++) {
+        if (!isdigit(argv[1][i])) {
+            uart0_puts_p(PSTR("Argument is not a decimal number!\r\n"));
+            lcd_clr(64, 16);
+            lcd_goto(LCD_ROW_2_START);
+            lcd_puts_P(PSTR("Not a number!"));
+                return;
+        }
+    }
+
+    if (number >= 0 && number <= 9) {
+        lcd_clr(64, 16);
+        lcd_goto(LCD_ROW_2_START);
+        uart0_puts_p(ENTERED_NUM_MESSAGE);
+        uart0_puts_p((PGM_P)pgm_read_word(&(number_name[number])));
+        uart0_puts_p(PSTR("\r\n"));
+        lcd_puts_P((PGM_P)pgm_read_word(&(number_name[number])));
+    } else {
+        uart0_puts_p(NOT_NUM_MESSAGE);
+        lcd_clr(64, 16);
+        lcd_goto(LCD_ROW_2_START);
+        lcd_puts_P(NOT_NUM_MESSAGE);
+    }
 }
 
 

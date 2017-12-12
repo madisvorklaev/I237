@@ -34,6 +34,7 @@
 volatile uint32_t counter_1; //Global seconds counter
 uint32_t prev_time = 0; //Heartbeat time placeholder
 uint32_t now = 0; //Heartbeat time placeholder
+
 //  Create  microrl object  and pointer on  it
 microrl_t rl;
 microrl_t *prl = &rl;
@@ -52,7 +53,6 @@ static inline void init_con_uarts(void)
     uart0_puts_p(PSTR("Console started\r\n"));
     uart0_puts_p(USERNAME);
     uart0_puts_p(PSTR("\r\n"));
-
     uart1_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
     uart1_puts_p(PSTR("Console started\r\n"));
     uart1_puts_p(USERNAME);
@@ -61,18 +61,6 @@ static inline void init_con_uarts(void)
     microrl_init (prl, uart0_puts);
     // set callback for execute
     microrl_set_execute_callback (prl, cli_execute);
-/*    // set callback for completion (optionally)*/
-/*    microrl_set_complete_callback (prl, complete);*/
-/*    // set callback for ctrl+c handling (optionally)*/
-/*    microrl_set_sigint_callback (prl, sigint);*/
-/*    print_ascii_tbl();*/
-/*    unsigned char ascii[128] = {0};*/
-
-/*    for (unsigned char i = 0; i < sizeof(ascii); i++) {*/
-/*        ascii[i] = i;*/
-/*    }*/
-
-/*    print_for_human(ascii, sizeof(ascii));*/
 }
 
 
@@ -95,14 +83,6 @@ static inline void init_counter_1(void)
     OCR1A = 2499;
 #endif /* COUNT_1_100_SECONDS */
     TIMSK1 |= _BV(OCIE1A); // Output Compare A Match Interrupt Enable
-}
-
-
-static inline void simu_big_prog(void)
-{
-    /* Simulate big program with delay and toggle LED */
-    PORTA ^= _BV(LED_RED);
-    _delay_ms(BLINK_DELAY_MS);
 }
 
 
@@ -134,49 +114,21 @@ static inline void heartbeat(void)
     /*    uart0_putc((uint8_t) counter_1_cpy);            // Put counter byte 0*/
 }
 
-/*static inline void init_uart_io(void)*/
-/*{*/
-/*    simple_uart0_init();*/
-/*    stdin = stdout = &simple_uart0_io;*/
-/*    fprintf_P(stdout, PSTR("%S\n"), USERNAME);*/
-/*    print_ascii_tbl(stdout);*/
-/*    unsigned char ascii[128] = {0};*/
-
-/*    for (unsigned char i = 0; i < sizeof(ascii); i++) {*/
-/*        ascii[i] = i;*/
-/*    }*/
-
-/*    print_for_human(stdout, ascii, sizeof(ascii));*/
-/*}*/
-
-
-/* Init error console as stderr in uart0 and print user code info */
-/*static inline void init_errcon(void)*/
-/*{*/
-/*    simple_uart0_init();*/
-/*    stderr = &simple_uart0_out;*/
-/*    fprintf_P(stderr, VER_FW);*/
-/*    fprintf_P(stderr, VER_AVR);*/
-/*}*/
 
 void main (void)
 {
-    /*    init_errcon(); error console on uart0*/
-    /*    init_uart_io();*/
-    /*    lcd_init();*/
-    /*    lcd_home();*/
-    /*    lcd_puts_P(USERNAME);*/
+
+    lcd_init();
+    lcd_home();
+    lcd_puts_P(USERNAME);
     /*    int number;*/
-    /*    init_hw();*/
     sei(); // Enable all interrupts. Set up all interrupts before sei()!!!
     init_leds();
     init_con_uarts();
     init_counter_1();
 
     while (1) {
-        /*        heartbeat();*/
         heartbeat();
-/*        simu_big_prog();*/
         //CLI commands are handled in cli_execute()
         microrl_insert_char(prl, (uart0_getc() & UART_STATUS_MASK));
         /*        fprintf_P(stdout, PSTR("%S\n"), GET_NUM_MESSAGE);*/

@@ -22,7 +22,7 @@ const char n8[] PROGMEM = "seven";
 const char n9[] PROGMEM = "eight";
 const char n10[] PROGMEM = "nine";
 
-PGM_P const numbers[] PROGMEM = {
+PGM_P const number_name[] PROGMEM = {
     n1,
     n2,
     n3,
