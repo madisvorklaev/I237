@@ -86,7 +86,7 @@ void cli_print_ver(const char *const *argv)
 void cli_print_ascii_tbls(const char *const *argv)
 {
     (void) argv;
-        print_ascii_tbl();
+    print_ascii_tbl();
     unsigned char ascii[128] = {0};
 
     for (unsigned char i = 0; i < sizeof(ascii); i++) {
@@ -99,17 +99,16 @@ void cli_print_ascii_tbls(const char *const *argv)
 
 void cli_handle_number(const char *const *argv)
 {
-    // TODO remove those two lines after command is implemented
     (void) argv;
-/*    uart0_puts_p(GET_NUM_MESSAGE);*/
     int number = atoi(argv[1]);
+
     for (size_t i = 0; i < strlen(argv[1]); i++) {
         if (!isdigit(argv[1][i])) {
             uart0_puts_p(PSTR("Argument is not a decimal number!\r\n"));
             lcd_clr(64, 16);
             lcd_goto(LCD_ROW_2_START);
             lcd_puts_P(PSTR("Not a number!"));
-                return;
+            return;
         }
     }
 
@@ -121,10 +120,11 @@ void cli_handle_number(const char *const *argv)
         uart0_puts_p(PSTR("\r\n"));
         lcd_puts_P((PGM_P)pgm_read_word(&(number_name[number])));
     } else {
-        uart0_puts_p(NOT_NUM_MESSAGE);
+        uart0_puts_p(OUT_OF_RANGE_NUM_MESSAGE);
+        uart0_puts_p(PSTR("\r\n"));
         lcd_clr(64, 16);
         lcd_goto(LCD_ROW_2_START);
-        lcd_puts_P(NOT_NUM_MESSAGE);
+        lcd_puts_P(PSTR("Must be 0-9!"));
     }
 }
 
@@ -138,7 +138,7 @@ void cli_print_cmd_error(void)
 void cli_print_cmd_arg_error(void)
 {
     uart0_puts_p(
-        PSTR("To few or too many arguments for this command\r\n\tUse <help>\r\n"));
+        PSTR("Too few or too many arguments for this command\r\n\tUse <help>\r\n"));
 }
 
 

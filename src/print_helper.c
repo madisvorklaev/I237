@@ -3,7 +3,6 @@
 #include "../lib/andygock_avr-uart/uart.h"
 #include <avr/pgmspace.h>
 
-
 /* Print ASCII table */
 void print_ascii_tbl(void)
 {
@@ -13,6 +12,7 @@ void print_ascii_tbl(void)
 
     uart0_puts_p(PSTR("\r\n"));
 }
+
 
 void print_for_human (const unsigned char *array, const size_t len)
 {

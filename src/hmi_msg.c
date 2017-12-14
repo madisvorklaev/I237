@@ -2,13 +2,13 @@
 #ifndef HMI_MSG /* prevent the header file to be included more than once, see "wrapper #ifndef" */
 #define HMI_MSG
 
+const char STARTUP_MESSAGE[] PROGMEM = "Console started";
 const char USERNAME[] PROGMEM = "Madis Vorklaev";
 const char VER_FW[] PROGMEM =
     "Version: "FW_VERSION" built on: "__DATE__" "__TIME__"\n";
 const char VER_AVR[] PROGMEM =
     "avr-libc version: "__AVR_LIBC_VERSION_STRING__" avr-gcc version: "__VERSION__"\n";
-const char GET_NUM_MESSAGE[] PROGMEM = "Enter number >";
-const char NOT_NUM_MESSAGE[] PROGMEM = "Enter number between 0 and 9!";
+const char OUT_OF_RANGE_NUM_MESSAGE[] PROGMEM = "Enter number between 0 and 9!";
 const char ENTERED_NUM_MESSAGE[] PROGMEM = "You entered number ";
 
 const char n1[] PROGMEM = "zero";
