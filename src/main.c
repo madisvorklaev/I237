@@ -24,15 +24,10 @@
 //#define COUNT_1_10_SECONDS  // 1/10 seconds
 //#define COUNT_1_100_SECONDS // 1/100 seconds
 
-/* Un comment to get ASCII print. Otherwise bytes are sent */
-#define ASCII_PRINT
-#ifdef ASCII_PRINT
-#endif /* ASCII_PRINT */
-
 
 volatile uint32_t counter_1; //Global seconds counter
-uint32_t prev_time = 0; //Heartbeat time placeholder
-uint32_t now = 0; //Heartbeat time placeholder
+/*uint32_t prev_time = 0; //Heartbeat time placeholder*/
+/*uint32_t now = 0; //Heartbeat time placeholder*/
 
 // Create microrl object and pointer on it
 microrl_t rl;
@@ -55,9 +50,8 @@ static inline void init_con_uarts(void)
     uart0_puts_p(USERNAME);
     uart0_puts_p(PSTR("\r\n"));
     uart1_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
-    uart1_puts_p(STARTUP_MESSAGE);
-    uart1_puts_p(PSTR("\r\n"));
-    uart1_puts_p(USERNAME);
+    uart1_puts_p(PSTR(VER_FW));
+    uart1_puts_p(PSTR(VER_LIBC));
     uart1_puts_p(PSTR("\r\n"));
     // call init with ptr to microrl instance and print callback
     microrl_init (prl, uart0_puts);
@@ -90,9 +84,9 @@ static inline void init_counter_1(void)
 
 static inline void heartbeat(void)
 {
-#ifdef ASCII_PRINT
+    static uint32_t prev_time;
+    uint32_t now = 0;
     char print_buf[11] = {0x00}; // Buffer lagre enough to hold all long (uint32_t) digits
-#endif /* ASCII_PRINT */
     ATOMIC_BLOCK(ATOMIC_FORCEON) {
         now = counter_1;
     }
@@ -103,9 +97,9 @@ static inline void heartbeat(void)
         uart1_puts(print_buf);
         uart1_puts_p(PSTR(" s\r\n"));
         PORTA ^= _BV(LED_GREEN);
-        ATOMIC_BLOCK(ATOMIC_FORCEON) {
-            prev_time = now;
-        }
+        /*        ATOMIC_BLOCK(ATOMIC_FORCEON) {*/
+        prev_time = now;
+        /*        }*/
     }
 }
 
