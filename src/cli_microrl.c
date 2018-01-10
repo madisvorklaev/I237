@@ -10,6 +10,7 @@
 #include "hmi_msg.h"
 #include "cli_microrl.h"
 #include "print_helper.h"
+#include "../lib/matejx_avr_lib/mfrc522.h"
 
 #define NUM_ELEMS(x)        (sizeof(x) / sizeof((x)[0]))
 
@@ -20,6 +21,7 @@ void cli_print_ascii_tbls(const char *const *argv);
 void cli_handle_number(const char *const *argv);
 void cli_print_cmd_error(void);
 void cli_print_cmd_arg_error(void);
+void cli_rfid_read(const char *const *argv);
 
 
 typedef struct cli_cmd {
@@ -28,6 +30,14 @@ typedef struct cli_cmd {
     void (*func_p)();
     const uint8_t func_argc;
 } cli_cmd_t;
+
+
+struct Uid {
+    byte size;
+    byte uidByte[10];
+    byte sak;
+};
+
 
 const char help_cmd[] PROGMEM = "help";
 const char help_help[] PROGMEM = "Get help";
@@ -41,6 +51,8 @@ const char ascii_help[] PROGMEM = "Print ASCII tables";
 const char number_cmd[] PROGMEM = "number";
 const char number_help[] PROGMEM =
     "Print and display matching number Usage: number <decimal number>";
+const char rfid_cmd[] PROGMEM = "rfid";
+const char rfid_help[] PROGMEM = "Reads a RFID card and prints out its info";
 
 
 const cli_cmd_t cli_cmds[] = {
@@ -49,6 +61,7 @@ const cli_cmd_t cli_cmds[] = {
     {example_cmd, example_help, cli_example, 3},
     {ascii_cmd, ascii_help, cli_print_ascii_tbls, 0},
     {number_cmd, number_help, cli_handle_number, 1},
+    {rfid_cmd, rfid_help, cli_rfid_read, 0},
 };
 
 
@@ -141,6 +154,36 @@ void cli_print_cmd_arg_error(void)
         PSTR("Too few or too many arguments for this command\r\n\tUse <help>\r\n"));
 }
 
+
+void cli_rfid_read(const char *const *argv)
+{
+    (void) argv;
+    Uid uid;
+    Uid *uid_ptr = &uid;
+    uart0_puts_p(PSTR("\n"));
+
+    if (PICC_IsNewCardPresent())
+    {
+        uart0_puts_p("Card selected!\n");
+        PICC_ReadCardSerial(uid_ptr);
+        uart0_puts_p("UID size: 0x%02X\n");
+        uart0_putc(uid.size);
+        uart0_puts_p("UID sak: 0x%02X\n");
+        uart0_putc(uid.sak);
+        uart0_puts_p("Card UID: ");
+
+        for (byte i = 0; i < uid.size; i++)
+        {
+            uart0_puts_p("%02X");
+            uart0_putc(uid.uidByte[i]);
+        }
+
+        uart0_puts_p(PSTR("\n"));
+    } else
+    {
+        uart0_puts_p(PSTR("Unable to select card.\n"));
+    }
+}
 
 int cli_execute(int argc, const char *const *argv)
 {

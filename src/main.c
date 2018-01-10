@@ -117,13 +117,6 @@ static inline void init_rfid_reader(void)
 }
 
 
-struct Uid
-{
-    byte size;
-    byte uidByte[10];
-    byte sak;
-};
-
 void main (void)
 {
     lcd_init();
@@ -133,6 +126,7 @@ void main (void)
     init_leds();
     init_con_uarts();
     init_counter_1();
+    init_rfid_reader();
 
     while (1) {
         heartbeat();
