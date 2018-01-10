@@ -11,6 +11,11 @@
 #include "../lib/helius_microrl/microrl.h"
 #include "../lib/hd44780_111/hd44780.h"
 #include "../lib/andygock_avr-uart/uart.h"
+#include "../lib/matejx_avr_lib/mfrc522.h"
+#include "../lib/matejx_avr_lib/hwdefs_minimal.h"
+#include "../lib/matejx_avr_lib/hwdefs.h"
+#include "../lib/matejx_avr_lib/spi.h"
+#include "../lib/andy_brown_memdebug/memdebug.h"
 
 #define UART_BAUD           9600
 #define UART_STATUS_MASK    0x00FF
@@ -103,6 +108,21 @@ static inline void heartbeat(void)
     }
 }
 
+
+static inline void init_rfid_reader(void)
+{
+    /* Init RFID-RC522 */
+    MFRC522_init();
+    PCD_Init();
+}
+
+
+struct Uid
+{
+    byte size;
+    byte uidByte[10];
+    byte sak;
+};
 
 void main (void)
 {
