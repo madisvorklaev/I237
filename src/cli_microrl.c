@@ -51,8 +51,8 @@ const char ascii_help[] PROGMEM = "Print ASCII tables";
 const char number_cmd[] PROGMEM = "number";
 const char number_help[] PROGMEM =
     "Print and display matching number Usage: number <decimal number>";
-const char rfid_cmd[] PROGMEM = "rfid";
-const char rfid_help[] PROGMEM = "Reads a RFID card and prints out its info";
+const char read_cmd[] PROGMEM = "read";
+const char read_help[] PROGMEM = "Reads a RFID card and prints out its info";
 
 
 const cli_cmd_t cli_cmds[] = {
@@ -61,7 +61,7 @@ const cli_cmd_t cli_cmds[] = {
     {example_cmd, example_help, cli_example, 3},
     {ascii_cmd, ascii_help, cli_print_ascii_tbls, 0},
     {number_cmd, number_help, cli_handle_number, 1},
-    {rfid_cmd, rfid_help, cli_rfid_read, 0},
+    {read_cmd, read_help, cli_rfid_read, 0},
 };
 
 
@@ -164,24 +164,27 @@ void cli_rfid_read(const char *const *argv)
 
     if (PICC_IsNewCardPresent())
     {
-        uart0_puts_p("Card selected!\n");
+        uart0_puts_p(PSTR("Card selected!\r\n"));
         PICC_ReadCardSerial(uid_ptr);
-        uart0_puts_p("UID size: 0x%02X\n");
+        uart0_puts_p(PSTR("UID size: "));
+        uart0_puts_p("0x%02X");
         uart0_putc(uid.size);
-        uart0_puts_p("UID sak: 0x%02X\n");
+        uart0_puts_p(PSTR("\r\n"));
+        uart0_puts_p(PSTR("UID sak: "));
+        uart0_puts_p("0x%02X");
         uart0_putc(uid.sak);
-        uart0_puts_p("Card UID: ");
+        uart0_puts_p(PSTR("\r\n"));
+        uart0_puts_p(PSTR("Card UID: "));
 
         for (byte i = 0; i < uid.size; i++)
         {
             uart0_puts_p("%02X");
             uart0_putc(uid.uidByte[i]);
         }
-
         uart0_puts_p(PSTR("\n"));
     } else
     {
-        uart0_puts_p(PSTR("Unable to select card.\n"));
+        uart0_puts_p(PSTR("Unable to select card.\r\n"));
     }
 }
 
