@@ -205,24 +205,24 @@ int main(int argc, char **argv)
     (void) argv;
     char s_buf[512] = {0};
     unsigned int i_buf = 0;
-    cargo_t *cargo_ptr = NULL;
-    wagon_t *train_head_ptr = NULL;
+    user_t *user_ptr = NULL;
+    entry_t *list_head_ptr = NULL;
     printf("Enter cargo (syntax: <name> <weight in kg>) >");
     scanf("%s %u", s_buf, &i_buf);
-    cargo_ptr = create_cargo(s_buf, &i_buf);
-    print_cargo(cargo_ptr);
-    train_head_ptr = create_train(cargo_ptr);
-    print_train(train_head_ptr);
+    user_ptr = add_user(s_buf, &i_buf);
+    print_user(user_ptr);
+    list_head_ptr = create_list(user_ptr);
+    print_list(list_head_ptr);
     printf("Enter number of wagons add to train >");
     scanf("%u", & i_buf);
 
     for (int i = 0; i < i_buf; i++) {
-        push_wagon(train_head_ptr, cargo_ptr);
+        push_entry(list_head_ptr, user_ptr);
     }
 
-    print_train(train_head_ptr);
+    print_list(list_head_ptr);
 
-    while (train_head_ptr != NULL) {
+    while (list_head_ptr != NULL) {
         printf("Enter wagon ID to be removed or -1 to exit >");
         scanf("%d", & i_buf);
 
@@ -231,17 +231,17 @@ int main(int argc, char **argv)
         }
 
         // Note that we use poiter to pointer again
-        remove_wagon(&train_head_ptr, &i_buf);
-        print_train(train_head_ptr);
+        remove_entry(&list_head_ptr, &i_buf);
+        print_list(list_head_ptr);
     }
 
     /* Watch out for memory leaks. All allocated memory shall be freed manually */
-    if (train_head_ptr != NULL) {
+    if (list_head_ptr != NULL) {
         // Do not free memory if it was freed already earlier by removing all wagons
-        destroy_train(train_head_ptr);
+        destroy_list(list_head_ptr);
     }
 
-    destroy_cargo(cargo_ptr);
+    delete_user(user_ptr);
     return 0;
 }
 
