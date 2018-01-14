@@ -22,6 +22,11 @@ void cli_handle_number(const char *const *argv);
 void cli_print_cmd_error(void);
 void cli_print_cmd_arg_error(void);
 void cli_rfid_read(const char *const *argv);
+void rfid_card_add(const char *const *argv);
+void rfid_card_remove(const char *const *argv);
+void rfid_card_print_list(const char *const *argv);
+void rfid_process_card(void);
+void rfid_handle_door_and_disp(void);
 
 
 typedef struct cli_cmd {
@@ -32,11 +37,11 @@ typedef struct cli_cmd {
 } cli_cmd_t;
 
 
-struct Uid {
-    byte size;
-    byte uidByte[10];
-    byte sak;
-};
+/*struct Uid {*/
+/*    byte size;*/
+/*    byte uidByte[10];*/
+/*    byte sak;*/
+/*};*/
 
 
 const char help_cmd[] PROGMEM = "help";
@@ -161,32 +166,49 @@ void cli_rfid_read(const char *const *argv)
     Uid uid;
     Uid *uid_ptr = &uid;
     uart0_puts_p(PSTR("\n"));
+    
+    byte bufferATQA[10];
+    byte bufferSize = sizeof(bufferATQA);
+/*    byte result;*/
+
+/*char *cptr;*/
+/*char c = ‘A’;*/
+/*cptr = &c;*/
+/*printf(“Muutuja, millele cptr viitab, on: %c\n”, *cptr);*/
+
 
     if (PICC_IsNewCardPresent())
     {
         uart0_puts_p(PSTR("Card selected!\r\n"));
-        PICC_ReadCardSerial(uid_ptr);
-        uart0_puts_p(PSTR("UID size: "));
-        uart0_puts_p("0x%02X");
-        uart0_putc(uid.size);
-        uart0_puts_p(PSTR("\r\n"));
-        uart0_puts_p(PSTR("UID sak: "));
-        uart0_puts_p("0x%02X");
-        uart0_putc(uid.sak);
-        uart0_puts_p(PSTR("\r\n"));
-        uart0_puts_p(PSTR("Card UID: "));
+        PICC_WakeupA(bufferATQA, &bufferSize);
+/*        if (result == STATUS_OK) {*/  //if lause korral ei k2ivitata readcardseriali mingil p6hjusel...
+/*            uart0_puts_p(PSTR("Wakeup OK"));*/
+            PICC_ReadCardSerial(uid_ptr);
+            uart0_puts_p(PSTR("UID size: "));
+            uart0_puts_p("0x%02X");
+            uart0_putc(uid.size);
+            uart0_puts_p(PSTR("\r\n"));
+            uart0_puts_p(PSTR("UID sak: "));
+            uart0_puts_p("0x%02X");
+            uart0_putc(uid.sak);
+            uart0_puts_p(PSTR("\r\n"));
+            uart0_puts_p(PSTR("Card UID: "));
 
-        for (byte i = 0; i < uid.size; i++)
+            for (byte i = 0; i < uid.size; i++)
+            {
+                uart0_puts_p("%02X");
+                uart0_putc(uid.uidByte[i]);
+            }
+            uart0_puts_p(PSTR("\n"));
+/*        } */
+        }else
         {
-            uart0_puts_p("%02X");
-            uart0_putc(uid.uidByte[i]);
+            uart0_puts_p(PSTR("Unable to select card.\r\n"));
         }
-        uart0_puts_p(PSTR("\n"));
-    } else
-    {
-        uart0_puts_p(PSTR("Unable to select card.\r\n"));
     }
-}
+
+
+
 
 int cli_execute(int argc, const char *const *argv)
 {
