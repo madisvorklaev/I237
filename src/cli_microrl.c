@@ -21,6 +21,9 @@ void cli_print_ascii_tbls(const char *const *argv);
 void cli_handle_number(const char *const *argv);
 void cli_print_cmd_error(void);
 void cli_print_cmd_arg_error(void);
+void cli_rfid_read(const char *const *argv);
+void cli_rfid_add(const char *const *argv);
+void print_list(const char *const *argv);
 
 
 typedef struct cli_cmd {
@@ -29,6 +32,19 @@ typedef struct cli_cmd {
     void (*func_p)();
     const uint8_t func_argc;
 } cli_cmd_t;
+
+
+typedef struct card_list
+{
+    uint8_t *card_uid;
+    char *name;
+    uint8_t uid_size;
+    struct card_list *next;
+}card_list_t;
+
+
+static card_list_t *card_list_head = NULL;
+
 
 
 const char help_cmd[] PROGMEM = "help";
@@ -55,6 +71,31 @@ const cli_cmd_t cli_cmds[] = {
     {number_cmd, number_help, cli_handle_number, 1},
     {read_cmd, read_help, cli_rfid_read, 0},
 };
+
+
+void cli_rfid_add(const char *const *argv)
+{
+    (void)argv;
+/*    card_list_t *card_list_head;*/
+    card_list_head = (card_list_t *)malloc(sizeof(card_list_t));
+    card_list_head->uid_size = strlen(argv[1]) /2;
+    card_list_head->card_uid = (uint8_t*)malloc(card_list_head->uid_size * sizeof(uint8_t)); 
+    card_list_head->name = malloc(sizeof(char) * strlen(argv[2]));
+    uart0_puts_p(PSTR("Card added"));
+    uart0_puts_p(PSTR("\r\n"));
+}
+
+
+/*void print_list(const char *const *argv) {*/
+/*    card_list_t *current = card_list_head;*/
+
+/*    while (current != NULL) {*/
+/*        uart0_puts(current->name);*/
+/*        uart0_puts_p(PSTR("\r\n"));*/
+/*        current = current->next;*/
+/*    }*/
+/*}*/
+
 
 
 void cli_print_help(const char *const *argv)
