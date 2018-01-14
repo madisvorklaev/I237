@@ -147,49 +147,6 @@ void cli_print_cmd_arg_error(void)
 }
 
 
-/*void cli_rfid_read(const char *const *argv)*/
-/*{*/
-/*    (void) argv;*/
-/*    Uid uid;*/
-/*    Uid *uid_ptr = &uid;*/
-/*    uart0_puts_p(PSTR("\n"));*/
-/*    */
-/*    byte bufferATQA[10];*/
-/*    byte bufferSize = sizeof(bufferATQA);*/
-/*    byte result;*/
-
-
-
-/*    if (PICC_IsNewCardPresent())*/
-/*    {*/
-/*        uart0_puts_p(PSTR("Card selected!\r\n"));*/
-/*        PICC_WakeupA(bufferATQA, &bufferSize);*/
-/*        if (result == STATUS_OK) {*/  //if lause korral ei k2ivitata readcardseriali mingil p6hjusel...*/
-/*            uart0_puts_p(PSTR("Wakeup OK"));*/
-/*            PICC_ReadCardSerial(uid_ptr);*/
-/*            uart0_puts_p(PSTR("UID size: "));*/
-/*            uart0_puts_p("0x%02X");*/
-/*            uart0_putc(uid.size);*/
-/*            uart0_puts_p(PSTR("\r\n"));*/
-/*            uart0_puts_p(PSTR("UID sak: "));*/
-/*            uart0_puts_p("0x%02X");*/
-/*            uart0_putc(uid.sak);*/
-/*            uart0_puts_p(PSTR("\r\n"));*/
-/*            uart0_puts_p(PSTR("Card UID: "));*/
-
-/*            for (byte i = 0; i < uid.size; i++)*/
-/*            {*/
-/*                uart0_puts_p("%02X");*/
-/*                uart0_putc(uid.uidByte[i]);*/
-/*            }*/
-/*            uart0_puts_p(PSTR("\n"));*/
-/*        } */
-/*        }else*/
-/*        {*/
-/*            uart0_puts_p(PSTR("Unable to select card.\r\n"));*/
-/*        }*/
-/*    }*/
-
 void cli_rfid_read(const char *const *argv)
 {
     (void) argv;
