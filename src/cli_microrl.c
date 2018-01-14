@@ -22,9 +22,12 @@ void cli_handle_number(const char *const *argv);
 void cli_print_cmd_error(void);
 void cli_print_cmd_arg_error(void);
 void cli_rfid_read(const char *const *argv);
-void cli_rfid_add(const char *const *argv);
-void print_list(const char *const *argv);
-
+void rfid_read(const char *const *argv);
+void rfid_card_add(const char *const *argv);
+void rfid_card_remove(const char *const *argv);
+void rfid_card_print_list(void);
+void rfid_process_card(void);
+void rfid_handle_door_and_disp(void);
 
 typedef struct cli_cmd {
     PGM_P cmd;
@@ -61,6 +64,10 @@ const char number_help[] PROGMEM =
     "Print and display matching number Usage: number <decimal number>";
 const char read_cmd[] PROGMEM = "read";
 const char read_help[] PROGMEM = "Reads a RFID card and prints out its info";
+const char add_cmd[] PROGMEM = "add";
+const char add_help[] PROGMEM = "Adds new card to system";
+const char listprint_cmd[] PROGMEM = "print";
+const char listprint_help[] PROGMEM = "Prints all registered cards";
 
 
 const cli_cmd_t cli_cmds[] = {
@@ -70,10 +77,12 @@ const cli_cmd_t cli_cmds[] = {
     {ascii_cmd, ascii_help, cli_print_ascii_tbls, 0},
     {number_cmd, number_help, cli_handle_number, 1},
     {read_cmd, read_help, cli_rfid_read, 0},
+    {add_cmd, add_help, rfid_card_add, 3},
+    {listprint_cmd, listprint_help, rfid_card_print_list, 0},
 };
 
 
-void cli_rfid_add(const char *const *argv)
+void rfid_card_add(const char *const *argv)
 {
     (void)argv;
 /*    card_list_t *card_list_head;*/
@@ -86,15 +95,15 @@ void cli_rfid_add(const char *const *argv)
 }
 
 
-/*void print_list(const char *const *argv) {*/
-/*    card_list_t *current = card_list_head;*/
+void rfid_card_print_list(void) {
+    card_list_t *current = card_list_head;
 
-/*    while (current != NULL) {*/
-/*        uart0_puts(current->name);*/
-/*        uart0_puts_p(PSTR("\r\n"));*/
-/*        current = current->next;*/
-/*    }*/
-/*}*/
+    while (current != NULL) {
+        uart0_puts(current->name);
+        uart0_puts_p(PSTR("\r\n"));
+        current = current->next;
+    }
+}
 
 
 
