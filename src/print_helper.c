@@ -1,9 +1,9 @@
-#include <stddef.h>         /* Needed for type size_t */
 #include <stdint.h>
 #include <stdio.h>
-#include "print_helper.h"
-#include "../lib/andygock_avr-uart/uart.h"
+#include <string.h>
+#include <stdlib.h>
 #include <avr/pgmspace.h>
+#include "../lib/andygock_avr-uart/uart.h"
 
 /* Print ASCII table */
 void print_ascii_tbl(void)
