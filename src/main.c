@@ -130,6 +130,7 @@ void main (void)
 
     while (1) {
         heartbeat();
+        rfid_process_card();
         //CLI commands are handled in cli_execute()
         microrl_insert_char(prl, (uart0_getc() & UART_STATUS_MASK));
     }
